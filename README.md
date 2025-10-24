@@ -19,7 +19,8 @@ To change this, edit the ext.args line in nexflow.config
 nextflow run amytims/atol-qc-raw-pacbio \
     --indir <INPUT_DIRECTORY> \
     --outdir <OUTPUT_DIRECTORY> \
-    --plot_title "Read Length Distribution" 
+    --plot_title "Read Length Distribution" \
+    -profile pawsey 
 ```
 
 To show all options, use:
