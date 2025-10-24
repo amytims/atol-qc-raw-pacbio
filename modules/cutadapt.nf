@@ -1,5 +1,6 @@
 process CUTADAPT {
     publishDir "${params.outdir}/qc/cutadapt", mode: 'copy',  pattern: "${basename}.cutadapt.log"
+    publishDir "${params.outdir}/processed_reads/hifi/", mode: 'copy', pattern: "${basename}.trim.fastq.gz"
 
     input:
     path fastq
