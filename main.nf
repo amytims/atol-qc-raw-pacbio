@@ -4,53 +4,33 @@ def help_file() {
     ##################### RUN QC AND SUMMARY STATS ON DOWNLOADED DATA #####################
     #######################################################################################
 
+        Runs cutadapt on pacbio data to filter residual adapters; generates read length
+        summary plot.
+        
+        Following Hanrahan et al. 2025 (doi.org/10.1093/g3journal/jkaf046),
+        cutadapt is run with the following parameters: 
+            --error-rate 0.1 
+            --overlap 25 
+            --match-read-wildcards 
+            --revcomp 
+            --discard-trimmed
+
+        To change this, edit the ext.args line in nextflow.config
+
+        OPTIONS:
+
         --indir <PATH/TO/INPUT/DIRECTORY>
                 File path to raw_reads directory where the output of 
-                atol-bpa-data-mover.nf is stored
+                atol-data-mover.nf is stored
                 Default is './results/raw_reads'
         
         --outdir <PATH/TO/OUTPUT/DIRECTORY>
                 File path to where processed reads and QC results should be stored
                 Default is './results'
 
-        --sample_id SAMPLE_ID
-                Sample name for the species. For BPA data, this should be the BPA 
-                organism grouping key of the species, of the form 
-                'taxid12345', where 12345 is the NCBI taxonomy id of the species
-
-        --pacbio_data
-                Are there PacBio HiFi data files to run, or not?
-                Default is 'false'
-
-        --hic_data
-                Are there HiC data files to run, or not?
-                Default is 'false'
-
-        --ont_data
-                Are there Oxford Nanopore data files to run, or not?
-                Default is 'false'
-
-        --filter_pacbio_adapters
-                Run cutadapt on pacbio data to filter residual adapters?
-                Default is 'true'
-                
-                Following Hanrahan et al. 2025 (doi.org/10.1093/g3journal/jkaf046),
-                cutadapt is run with the following parameters: 
-                    --error-rate 0.1 
-                    --overlap 25 
-                    --match-read-wildcards 
-                    --revcomp 
-                    --discard-trimmed
-
-                To change this, edit the ext.args line in atol-qc-raw-read.config
-
         --pacbio_adapters_fasta
                 Path to .fasta file containing PacBio HiFi adapters to filter
                 Default is 'assets/pacbio_adapters.fa'
-
-        --read_length_summary
-                Plot read length distribution summary and calculate stats?
-                Default is 'true'
 
         --plot_title
                 Title of summary plot. Can be changed to include species name
@@ -59,7 +39,6 @@ def help_file() {
                 TO BE REPLACED WITH A CONTAINER
                 Name of R module file to load.
                 Default is 'r/4.4.1'
-
 
     #######################################################################################
     """.stripIndent()
@@ -77,14 +56,7 @@ allowed_params = [
     // pipeline inputs
     "indir",
     "outdir",
-    "sample_id",
-    "pacbio_data",
-    "hic_data",
-    "ont_data",
-
-    "filter_pacbio_adapters",
     "pacbio_adapters_fasta",
-    "read_length_summary",
     "plot_title",
     "R",
 
@@ -105,63 +77,25 @@ include { BAM_TO_FASTQ } from './modules/bam_to_fastq.nf'
 include { CUTADAPT } from './modules/cutadapt.nf'
 include { READ_LENGTH_SUMMARY } from './modules/read_length_summary.nf'
 include { PLOT_READ_LENGTHS } from './modules/plot_read_length_summary.nf'
-include { CONCAT_PACBIO_READS } from './modules/concat_pacbio_reads.nf'
-include { CONCAT_HIC_READS } from './modules/concat_hic_reads.nf'
 
 
-// 
 workflow {
-    // process any pacbio data
-    if ( params.pacbio_data ) {
         
-        pacbio_samples_ch = Channel.fromPath("${params.indir}/hifi/*")
-        //pacbio_samples_ch.view()
+    pacbio_samples_ch = Channel.fromPath("${params.indir}/hifi/*")
+    //pacbio_samples_ch.view()
 
-        // filter adapters if desired
-        if ( params.filter_pacbio_adapters ) {
-            BAM_TO_FASTQ(pacbio_samples_ch)
-            CUTADAPT(BAM_TO_FASTQ.out.fastq, "${params.pacbio_adapters_fasta}")
-        }
+    BAM_TO_FASTQ(pacbio_samples_ch)
 
-        // sumarize read lengths if desired
-        if ( params.read_length_summary ) {
+    cutadapt_ch = BAM_TO_FASTQ.out.fastq
 
-            if ( params.filter_pacbio_adapters ) {
-                read_length_summary_ch = CUTADAPT.out.filt_fastq_gz
-            } else {
-                read_length_summary_ch = pacbio_samples_ch
-            }
+    CUTADAPT(cutadapt_ch, "${params.pacbio_adapters_fasta}")
 
-            READ_LENGTH_SUMMARY(read_length_summary_ch)
+    read_length_summary_ch = CUTADAPT.out.filt_fastq_gz
 
-            plot_read_lengths_ch = READ_LENGTH_SUMMARY.out.read_lengths.collect()
+    READ_LENGTH_SUMMARY(read_length_summary_ch)
 
-            PLOT_READ_LENGTHS(plot_read_lengths_ch)
-        }
+    plot_read_lengths_ch = READ_LENGTH_SUMMARY.out.read_lengths.collect()
 
-        // concat pacbio reads and convert to fasta.gz output
-        if ( params.filter_pacbio_adapters ) {
-            concat_pacbio_reads_ch = CUTADAPT.out.filt_fastq_gz.collect()
-        } else {
-            concat_pacbio_reads_ch = pacbio_samples_ch.collect()
-        }
-
-        CONCAT_PACBIO_READS(concat_pacbio_reads_ch)
-    }
-
-
-    // process any hi-c data
-    if ( params.hic_data ) {
-        
-        hic_samples_ch = Channel.fromPath("${params.indir}/hic/*")
-        //hic_samples_ch.view()
-
-
-        // this will get swapped out for a QC process at some point
-        concat_hic_reads_ch = hic_samples_ch.collect()
-
-        CONCAT_HIC_READS(concat_hic_reads_ch)
-
-    }
+    PLOT_READ_LENGTHS(plot_read_lengths_ch)
 
 }
