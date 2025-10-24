@@ -81,7 +81,7 @@ include { PLOT_READ_LENGTHS } from './modules/plot_read_length_summary.nf'
 
 workflow {
         
-    pacbio_samples_ch = Channel.fromPath("${params.indir}/hifi/*")
+    pacbio_samples_ch = Channel.fromPath("${params.indir}/*")
     //pacbio_samples_ch.view()
 
     BAM_TO_FASTQ(pacbio_samples_ch)
