@@ -11,7 +11,7 @@ process READ_LENGTH_SUMMARY {
     script:
     basename=input_file.getBaseName(input_file.name.endsWith('.gz')? 2: 1)
     """
-    seqtk stats $input_file -a > "${basename}_summary_stats.txt"
+    seqkit stats $input_file -a > "${basename}_summary_stats.txt"
 
     zcat $input_file | seqkit fx2tab -l | cut -f 4 > "${basename}_read_lengths.txt"
 
