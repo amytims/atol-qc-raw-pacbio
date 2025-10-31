@@ -18,7 +18,7 @@ pdf("pacbio_read_length_distributions.pdf", height=6, width=9)
 
     # histogram of all files
     hist(r$V1, breaks=seq(from=0, to=xmax, by=1000), las=1, ylim=c(0, ymax),
-        main=paste(args[2], "read length distribution"),
+        main=args[2],
         xlab="read length", ylab="", col=cols[1])
 
         # data summary for the last file in the list
