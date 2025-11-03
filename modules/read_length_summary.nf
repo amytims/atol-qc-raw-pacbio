@@ -5,7 +5,7 @@ process READ_LENGTH_SUMMARY {
     path input_file
 
     output:
-    path "${basename}_read_lengths.txt", emit: summary_stats
+    path "${basename}_summary_stats.txt", emit: summary_stats
     path "${basename}_read_lengths.txt", emit: read_lengths
 
     script:
