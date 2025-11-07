@@ -17,4 +17,10 @@ process READ_LENGTH_SUMMARY {
 
     sed -i "s/\$/\t${basename}/" ${basename}_read_lengths.txt
     """
+
+// we can plot a histogram directly with seqkit if we want - less pretty but faster
+// the 1000-width bins calculation is cursed, maybe we shouldn't do this
+// test later
+//seqkit watch --fields ReadLen $input_file -O "${basename}_read_length_plot.png" --bins \$(tail ${basename}_summary_stats.txt -n1 | awk '{print $8}' | sed  's/,//g'| xargs -n 1 bash -c 'echo \$(((\$1/1000) +1 ))' args)
+
 }
