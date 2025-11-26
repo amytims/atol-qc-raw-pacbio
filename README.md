@@ -26,5 +26,5 @@ nextflow run amytims/atol-qc-raw-pacbio \
 To show all options, use:
 
 ```
-nextflow run amytims/atol-data-mover --help
+nextflow run amytims/atol-qc-raw-pacbio --help
 ```
