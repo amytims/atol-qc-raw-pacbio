@@ -25,20 +25,20 @@ def help_file() {
                 Default is './results/raw_reads'
         
         --outdir <PATH/TO/OUTPUT/DIRECTORY>
-                File path to where processed reads and QC results should be stored
-                Default is './results'
+                File path to where processed reads should be stored
+                Default is './results/processed_reads'
+
+        --stats <PATH/TO/OUTPUT/DIRECTORY>
+                File path to where summary stats .json file should be stored
+                Default is './results/qc'
+
+        --logs <PATH/TO/OUTPUT/DIRECTORY>
+            File path to where cutadapt and seqkit logs should be stored
+            Default is './results/qc'
 
         --pacbio_adapters_fasta
                 Path to .fasta file containing PacBio HiFi adapters to filter
                 Default is 'assets/pacbio_adapters.fa'
-
-        --plot_title
-                Title of summary plot. Can be changed to include species name
-                Default is 'Read Length Distribution'
-        --R
-                TO BE REPLACED WITH A CONTAINER
-                Name of R module file to load.
-                Default is 'r/4.4.1'
 
     #######################################################################################
     """.stripIndent()
@@ -56,9 +56,9 @@ allowed_params = [
     // pipeline inputs
     "indir",
     "outdir",
+    "stats",
+    "logs",
     "pacbio_adapters_fasta",
-    "plot_title",
-    "R",
 
     // Pawsey options
     "max_cpus",
@@ -76,14 +76,12 @@ params.each { entry ->
 include { BAM_TO_FASTQ } from './modules/bam_to_fastq.nf'
 include { CUTADAPT } from './modules/cutadapt.nf'
 include { READ_LENGTH_SUMMARY } from './modules/read_length_summary.nf'
-include { PLOT_READ_LENGTHS } from './modules/plot_read_length_summary.nf'
 include { GENERATE_STATS_FILE } from './modules/generate_stats_file.nf'
 
 
 workflow {
         
     pacbio_samples_ch = Channel.fromPath("${params.indir}/*")
-    //pacbio_samples_ch.view()
 
     BAM_TO_FASTQ(pacbio_samples_ch)
 
@@ -96,9 +94,5 @@ workflow {
     READ_LENGTH_SUMMARY(read_length_summary_ch)
 
     GENERATE_STATS_FILE(CUTADAPT.out.cutadapt_log, READ_LENGTH_SUMMARY.out.summary_stats)
-
-    //plot_read_lengths_ch = READ_LENGTH_SUMMARY.out.read_lengths.collect()
-
-    //PLOT_READ_LENGTHS(plot_read_lengths_ch)
 
 }
