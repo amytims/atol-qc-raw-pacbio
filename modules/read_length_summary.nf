@@ -13,7 +13,7 @@ process READ_LENGTH_SUMMARY {
     """
     seqkit stats $input_file -a > "${basename}_summary_stats.txt"
 
-    seqkit watch --fields ReadLen $input_file -O "${basename}_read_length_plot.png" --bins \$(awk 'FNR == 2 {print $8}' ${basename}_summary_stats.txt | sed  's/,//g'| xargs -n 1 bash -c 'echo \$(((\$1/1000) +1 ))' args)
+    seqkit watch --fields ReadLen $input_file -O "${basename}_read_length_plot.png" --bins \$(awk 'FNR == 2 {print \$8}' ${basename}_summary_stats.txt | sed  's/,//g'| xargs -n 1 bash -c 'echo \$(((\$1/1000) +1 ))' args)
 
     """
 
