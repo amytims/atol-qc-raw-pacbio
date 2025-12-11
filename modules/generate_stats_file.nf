@@ -1,4 +1,6 @@
- publishDir "${params.outdir}/qc", mode: 'copy'
+process GENERATE_STATS_FILE {
+
+   publishDir "${params.outdir}/qc", mode: 'copy'
 
    input:
    path cutadapt_log
@@ -28,3 +30,4 @@
    EOF
 
    """
+}
