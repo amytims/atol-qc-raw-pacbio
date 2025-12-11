@@ -77,6 +77,7 @@ include { BAM_TO_FASTQ } from './modules/bam_to_fastq.nf'
 include { CUTADAPT } from './modules/cutadapt.nf'
 include { READ_LENGTH_SUMMARY } from './modules/read_length_summary.nf'
 include { PLOT_READ_LENGTHS } from './modules/plot_read_length_summary.nf'
+include { GENERATE_STATS_FILE } from './modules/generate_stats_file.nf'
 
 
 workflow {
@@ -93,6 +94,8 @@ workflow {
     read_length_summary_ch = CUTADAPT.out.filt_fastq_gz
 
     READ_LENGTH_SUMMARY(read_length_summary_ch)
+
+    GENERATE_STATS_FILE(CUTADAPT.out.cutadapt_log, READ_LENGTH_SUMMARY.out.summary_stats)
 
     //plot_read_lengths_ch = READ_LENGTH_SUMMARY.out.read_lengths.collect()
 
