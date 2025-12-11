@@ -94,8 +94,8 @@ workflow {
 
     READ_LENGTH_SUMMARY(read_length_summary_ch)
 
-    plot_read_lengths_ch = READ_LENGTH_SUMMARY.out.read_lengths.collect()
+    //plot_read_lengths_ch = READ_LENGTH_SUMMARY.out.read_lengths.collect()
 
-    PLOT_READ_LENGTHS(plot_read_lengths_ch)
+    //PLOT_READ_LENGTHS(plot_read_lengths_ch)
 
 }
