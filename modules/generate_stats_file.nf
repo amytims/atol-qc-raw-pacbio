@@ -1,6 +1,6 @@
 process GENERATE_STATS_FILE {
 
-   publishDir "${params.outdir}/qc", mode: 'copy'
+   publishDir "${params.stats}", mode: 'copy'
 
    input:
    path cutadapt_log

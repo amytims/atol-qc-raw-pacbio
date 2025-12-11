@@ -1,5 +1,5 @@
 process READ_LENGTH_SUMMARY {
-    publishDir "${params.outdir}/qc/read_length_distributions", mode: 'copy', pattern: "${basename}_read_length_plot.png"
+    publishDir "${params.logs}/pacbio_read_length_distributions", mode: 'copy', pattern: "${basename}_read_length_plot.png"
 
     input:
     path input_file
