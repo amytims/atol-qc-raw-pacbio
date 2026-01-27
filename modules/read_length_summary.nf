@@ -1,6 +1,6 @@
 process READ_LENGTH_SUMMARY {
-    publishDir "${params.logs}/pacbio_summary_info", mode: 'copy', pattern: "${basename}_read_length_plot.png"
-    publishDir "${params.logs}/pacbio_summary_info", mode: 'copy',  pattern: "${basename}.summary_stats.txt"
+    publishDir "${params.logs}/pacbio_logs", mode: 'copy', pattern: "${basename}_read_length_plot.png"
+    publishDir "${params.logs}/pacbio_logs", mode: 'copy',  pattern: "${basename}.summary_stats.txt"
 
     input:
     path input_file
