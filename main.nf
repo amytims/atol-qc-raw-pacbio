@@ -20,13 +20,12 @@ def help_file() {
         OPTIONS:
 
         --indir <PATH/TO/INPUT/DIRECTORY>
-                File path to raw_reads directory where the output of 
-                atol-data-mover.nf is stored
-                Default is './results/raw_reads'
+                File path to the directory where raw hifi read files are stored
+                Default is './results/raw_reads/hifi'
         
         --outdir <PATH/TO/OUTPUT/DIRECTORY>
-                File path to where processed reads should be stored
-                Default is './results/processed_reads'
+                File path to where processed hifi reads should be stored
+                Default is './results/processed_reads/hifi'
 
         --stats <PATH/TO/OUTPUT/DIRECTORY>
                 File path to where summary stats .json file should be stored
@@ -34,7 +33,7 @@ def help_file() {
 
         --logs <PATH/TO/OUTPUT/DIRECTORY>
             File path to where cutadapt and seqkit logs should be stored
-            Default is './results/qc'
+            Default is './results/qc/pacbio_logs'
 
         --pacbio_adapters_fasta
                 Path to .fasta file containing PacBio HiFi adapters to filter
