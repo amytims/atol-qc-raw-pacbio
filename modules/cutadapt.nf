@@ -1,6 +1,6 @@
 process CUTADAPT {
-    publishDir "${params.logs}/pacbio_logs/", mode: 'copy',  pattern: "${basename}.cutadapt.log"
-    publishDir "${params.outdir}/hifi/", mode: 'copy', pattern: "${basename}.trim.fastq.gz"
+    publishDir "${params.logs}", mode: 'copy',  pattern: "${basename}.cutadapt.log"
+    publishDir "${params.outdir}", mode: 'copy', pattern: "${basename}.trim.fastq.gz"
 
     input:
     path fastq
