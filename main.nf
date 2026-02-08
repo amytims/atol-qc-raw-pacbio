@@ -31,12 +31,12 @@ def help_file() {
                 Default is './results/processed_reads/hifi'
 
         --stats <PATH/TO/OUTPUT/DIRECTORY>
-                File path to where summary stats .json file should be stored
+                File path to where summary stats .json file(s) should be stored
                 Default is './results/qc'
 
         --logs <PATH/TO/OUTPUT/DIRECTORY>
-            File path to where cutadapt and seqkit logs should be stored
-            Default is './results/qc/pacbio_logs'
+                File path to where cutadapt and seqkit logs should be stored
+                Default is './results/qc/pacbio_logs'
 
         --pacbio_adapters_fasta
                 Path to .fasta file containing PacBio HiFi adapters to filter
@@ -142,14 +142,14 @@ workflow {
 
     BAM_TO_FASTQ(pacbio_samples_ch)
 
-    // cutadapt_ch = BAM_TO_FASTQ.out.fastq
+    cutadapt_ch = BAM_TO_FASTQ.out.fastq
 
-    // CUTADAPT(cutadapt_ch, "${params.pacbio_adapters_fasta}")
+    CUTADAPT(cutadapt_ch, "${params.pacbio_adapters_fasta}")
 
-    // read_length_summary_ch = CUTADAPT.out.filt_fastq_gz
+    read_length_summary_ch = CUTADAPT.out.filt_fastq_gz
 
-    // READ_LENGTH_SUMMARY(read_length_summary_ch)
+    READ_LENGTH_SUMMARY(read_length_summary_ch)
 
-    // GENERATE_STATS_FILE(CUTADAPT.out.cutadapt_log, READ_LENGTH_SUMMARY.out.summary_stats)
+    GENERATE_STATS_FILE(CUTADAPT.out.cutadapt_log, READ_LENGTH_SUMMARY.out.summary_stats)
 
 }
