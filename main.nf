@@ -112,6 +112,7 @@ workflow {
         pacbio_samples_reformatted = pacbio_samples
             .collectMany { pkg, pkgData ->
                 pkgData.collect { file ->
+                    def file_path = "${params.indir}"+file.name
                     [
                         package: pkg,
                         file_name: file.name,
@@ -119,20 +120,27 @@ workflow {
                         url: file.url,
                         md5sum: file.md5sum,
                         lane: [],
-                        read: []
+                        read: [],
+                        file: file_path
                     ]
 
                 }
             }
+        pacbio_samples_ch = Channel.from(pacbio_samples_reformatted)
     }
 
-    pacbio_samples_reformatted['file_name'].each {
-        file("${params.indir}/"+it, checkIfExists: true)
-    }
+    // check each input file exists; throw error if not
+    pacbio_samples_ch
+        .map { file_info ->
+                if ( !file(file_info.file).exists() ) { error(
+                """
+                ERROR: ${file_info.file} does not exist. Check \'--indir\' is correct
+                """
+                )
+            } 
+        }
 
-    // pacbio_samples_ch = Channel.fromPath("${params.indir}/*")
-
-    // BAM_TO_FASTQ(pacbio_samples_ch)
+    BAM_TO_FASTQ(pacbio_samples_ch)
 
     // cutadapt_ch = BAM_TO_FASTQ.out.fastq
 
