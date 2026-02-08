@@ -6,7 +6,7 @@ process BAM_TO_FASTQ {
     path "${basename}.fastq", emit: fastq
 
     script:
-    basename = input_bam.getBaseName(1)
+    basename = file_path.getBaseName(1)
     """
     # Note: --threads value represents *additional* CPUs to allocate (total CPUs = 1 + --threads)
     samtools fastq --threads ${task.cpus-1} $file_path > ${basename}.fastq
