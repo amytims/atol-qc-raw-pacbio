@@ -16,6 +16,7 @@ process CUTADAPT {
     """
     cutadapt --cores ${task.cpus} --anywhere 'file:${adapters}' \
         ${args} \
+        --minimum-length ${params.min_length} \
         --output ${basename}.trim.fastq \
         ${fastq} \
         > ${basename}.cutadapt.log
