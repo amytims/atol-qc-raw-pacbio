@@ -31,7 +31,7 @@ nextflow pull amytims/atol-qc-raw-pacbio -r dev
 
 > [!IMPORTANT]
 > Pipeline currently requires an atol-datamapper .yaml file to validate file inputs \
-> Make this optional for processing non-atol data?
+> This will be made optional in future releases
 
 ### Run QC for all PacBio reads listed in config.yaml file
 
