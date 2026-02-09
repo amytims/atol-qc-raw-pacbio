@@ -6,16 +6,26 @@ Runs QC and produces summary stats on Pacbio HiFi reads
 3. Output stats and read length distribution plot (`seqkit`)
 
 
-Following Hanrahan et al. 2025 (doi.org/10.1093/g3journal/jkaf046),
-cutadapt is run with the following parameters: 
+> [!NOTE]
+> Following Hanrahan et al. 2025 (doi.org/10.1093/g3journal/jkaf046),
+> cutadapt is run with the following parameters: 
+> ```
+>     --error-rate 0.1
+>     --overlap 25
+>     --match-read-wildcards
+>     --revcomp
+>     --discard-trimmed
+> ```
+> To change this, edit the `ext.args` line in the `nexflow.config` file
+
+## Installation
+
+To install the latest version on Pawsey:
+
 ```
-    --error-rate 0.1
-    --overlap 25
-    --match-read-wildcards
-    --revcomp
-    --discard-trimmed
+module load nextflow/25.04.6
+nextflow pull amytims/atol-qc-raw-pacbio -r dev
 ```
-To change this, edit the ext.args line in nexflow.config
 
 ## Usage
 
@@ -76,3 +86,5 @@ output:
 
 ## To-do
 1. Test pipeline with added `--min_length` option, make sure it hasn't broken anything
+2. Make use of .yaml file optional - just set up to print a warning message and then process all .bam files in `--indir`
+3. Look into containerising pipeline for use outside of Pawsey
