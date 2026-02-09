@@ -8,7 +8,7 @@ Runs QC and produces summary stats on Pacbio HiFi reads
 
 > [!NOTE]
 > Following [Hanrahan et al. 2025](https://doi.org/10.1093/g3journal/jkaf046),
-> cutadapt is run with the following parameters: 
+> `cutadapt` is run with the following parameters by default: 
 > ```
 >     --error-rate 0.1
 >     --overlap 25
