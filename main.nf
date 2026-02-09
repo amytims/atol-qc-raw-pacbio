@@ -5,7 +5,7 @@ def help_file() {
     #######################################################################################
 
         Runs cutadapt on pacbio data to filter residual adapters; generates read length
-        summary plot.
+        summary plot and stats file.
         
         Following Hanrahan et al. 2025 (doi.org/10.1093/g3journal/jkaf046),
         cutadapt is run with the following parameters: 
@@ -37,6 +37,10 @@ def help_file() {
         --logs <PATH/TO/OUTPUT/DIRECTORY>
                 File path to where cutadapt and seqkit logs should be stored
                 Default is './results/qc/pacbio_logs'
+        
+        --min_length INT
+                Minimum length read to output
+                Default is 1, i.e. keep all reads
 
         --pacbio_adapters_fasta
                 Path to .fasta file containing PacBio HiFi adapters to filter
@@ -62,6 +66,7 @@ allowed_params = [
     "stats",
     "logs",
     "pacbio_adapters_fasta",
+    "min_length",
 
     // Pawsey options
     "max_cpus",
