@@ -7,7 +7,7 @@ Runs QC and produces summary stats on Pacbio HiFi reads
 
 
 > [!NOTE]
-> Following Hanrahan et al. 2025 (doi.org/10.1093/g3journal/jkaf046),
+> Following [Hanrahan et al. 2025](doi.org/10.1093/g3journal/jkaf046),
 > cutadapt is run with the following parameters: 
 > ```
 >     --error-rate 0.1
