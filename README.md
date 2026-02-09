@@ -7,19 +7,20 @@ Runs QC and produces summary stats on Pacbio HiFi reads
 
 
 Following Hanrahan et al. 2025 (doi.org/10.1093/g3journal/jkaf046),
-cutadapt is run with the following parameters: \
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--error-rate 0.1 \
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--overlap 25 \
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--match-read-wildcards \
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--revcomp \
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--discard-trimmed
-
+cutadapt is run with the following parameters: 
+```
+    --error-rate 0.1
+    --overlap 25
+    --match-read-wildcards
+    --revcomp
+    --discard-trimmed
+```
 To change this, edit the ext.args line in nexflow.config
 
 ## Usage
 
 > [!IMPORTANT]
-> Pipeline currently requires an atol-datamapper .yaml file to validate file inputs
+> Pipeline currently requires an atol-datamapper .yaml file to validate file inputs \
 > Make this optional for processing non-atol data?
 
 ### Run QC for all PacBio reads listed in config.yaml file
@@ -34,7 +35,6 @@ nextflow run amytims/atol-qc-raw-pacbio \
     --stats <PATH/TO/STATS_FILES_DIRECTORY> \
     --logs <PATH/TO/LOGFILES_DIRECTORY> \
     --min_length INT
-
 ```
 
 ### Full usage
@@ -72,7 +72,6 @@ output:
     --logs <PATH/TO/OUTPUT/DIRECTORY>
             File path to where cutadapt and seqkit logs should be stored
             Default is './results/qc/pacbio_logs'
-    
 ```
 
 ## To-do
