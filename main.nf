@@ -88,13 +88,13 @@ if ( !params.yaml ) { error(
     """
 )}
 
-
+// pull in scripts for relevant processes
 include { BAM_TO_FASTQ } from './modules/bam_to_fastq.nf'
 include { CUTADAPT } from './modules/cutadapt.nf'
 include { READ_LENGTH_SUMMARY } from './modules/read_length_summary.nf'
 include { GENERATE_STATS_FILE } from './modules/generate_stats_file.nf'
 
-
+// pull the snakeyaml add-on to process the .yaml file
 def readYAML(yamlfile) {
     return new org.yaml.snakeyaml.Yaml().load(yamlfile.text)
 }
