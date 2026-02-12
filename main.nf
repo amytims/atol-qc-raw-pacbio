@@ -117,11 +117,11 @@ workflow {
         pacbio_samples_reformatted = pacbio_samples
             .collectMany { pkg, pkgData ->
                 pkgData.collect { file ->
-                    def file_path = "${params.indir}"+file.name
+                    def file_name = file.url.tokenize('/')[-1],
+                    def file_path = "${params.indir}"+file_name
                     [
                         package: pkg,
-                        file_name: file.name,
-                        format: file.format,
+                        file_name: file_name,
                         url: file.url,
                         md5sum: file.md5sum,
                         lane: [],

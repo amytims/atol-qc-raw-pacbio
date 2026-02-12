@@ -1,6 +1,6 @@
 process BAM_TO_FASTQ {
     input:
-    tuple val(pkg), val(file_name), val(format), val(url), val(md5sum), val(lane), val(read), path(file_path)
+    tuple val(pkg), val(file_name), val(url), val(md5sum), val(lane), val(read), path(file_path)
     
     output:
     path "${basename}.fastq", emit: fastq
