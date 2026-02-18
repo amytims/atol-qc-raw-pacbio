@@ -20,11 +20,11 @@ Runs QC and produces summary stats on Pacbio HiFi reads
 
 ## Installation
 
-To install the latest version on Pawsey:
+To install the latest stable version on Pawsey:
 
 ```
 module load nextflow/25.04.6
-nextflow pull amytims/atol-qc-raw-pacbio -r dev
+nextflow pull amytims/atol-qc-raw-pacbio -r 0.1.0
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ nextflow pull amytims/atol-qc-raw-pacbio -r dev
 
 ```
 nextflow run amytims/atol-qc-raw-pacbio \
-    -r dev \
+    -r 0.1.0 \
     -profile pawsey \
     --yaml <PATH/TO/DATAMAPPER/OUTPUT/YAML> \
     --indir <PATH/TO/RAW_HIFI_READS_DIRECTORY> \
