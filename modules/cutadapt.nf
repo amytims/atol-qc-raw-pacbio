@@ -1,6 +1,6 @@
 process CUTADAPT {
-    publishDir "${params.outdir}/qc/cutadapt", mode: 'copy',  pattern: "${basename}.cutadapt.log"
-    publishDir "${params.outdir}/processed_reads/hifi/", mode: 'copy', pattern: "${basename}.trim.fastq.gz"
+    publishDir "${params.logs}", mode: 'copy',  pattern: "${basename}.cutadapt.log"
+    publishDir "${params.outdir}", mode: 'copy', pattern: "${basename}.trim.fastq.gz"
 
     input:
     path fastq
@@ -16,6 +16,7 @@ process CUTADAPT {
     """
     cutadapt --cores ${task.cpus} --anywhere 'file:${adapters}' \
         ${args} \
+        --minimum-length ${params.min_length} \
         --output ${basename}.trim.fastq \
         ${fastq} \
         > ${basename}.cutadapt.log
