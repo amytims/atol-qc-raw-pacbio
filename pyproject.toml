@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dependencies = ["snakemake>=9.11.6,<10", "pandas>=2.3.3,<3"]
+name = "atol-qc-raw-pacbio"
+dynamic = ["version"]
+description = "python3 wrapper for AToL raw read QC steps (PacBio version)"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "Amy Tims", email = "amy.tims@unimelb.edu.au" }, { name = "Tom Harrop", email = "tharrop@unimelb.edu.au" }]
+requires-python = ">=3.12,<3.13"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Private :: Do Not Upload",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.scripts]
+atol-qc-raw-pacbio = "atol_qc_raw_pacbio.__main__:main"
+process_step_logs = "atol_qc_raw_pacbio.process_step_logs:main"
+
+[project.urls]
+Homepage = "https://github.com/amytims/atol-qc-raw-pacbio"
+
+[tool.setuptools]
+packages = ["atol_qc_raw_pacbio"]
+
+
+[tool.setuptools.package-data]
+atol_qc_raw_pacbio = [
+    "workflow/Snakefile",
+    "workflow/report/stats_schema.json",
+    "workflow/scripts/output_json_stats.py",
+    "workflow/resources/pacbio_adapters.fa",
+]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["extras/*"]
+
+[tool.setuptools_scm]
