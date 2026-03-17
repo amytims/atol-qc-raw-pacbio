@@ -115,8 +115,10 @@ rule pigz:
         Path(logs_directory, "pigz.log"),
     benchmark:
         Path(logs_directory, "pigz.benchmark.txt")
+    threads:
+        3
     shell:
-        "pigz --fast -c {input.trimmed_fastq} > {output.reads_out}"
+        "pigz --fast -p {threads} -c < {input.trimmed_fastq} > {output.reads_out}"
 
 
 rule cutadapt:
@@ -124,7 +126,7 @@ rule cutadapt:
         fastq=Path(workingdir, "file.fq"),
         pacbio_adapters=pacbio_adapters,
     output:
-        trimmed_fastq=temp(Path(workingdir, "trimmed_file.fq")),
+        trimmed_fastq=pipe(Path(workingdir, "trimmed_file.fq")),
         cutadapt_json=temp(Path(workingdir, "cutadapt.json")),
     params:
         revcomp=lambda wildcards: "--revcomp" if revcomp else "",
@@ -141,12 +143,13 @@ rule cutadapt:
         Path(logs_directory, "cutadapt.benchmark.txt")
     resources:
         mem="4GB",
+    threads:
+        4
     shell:
         "cutadapt "
         "--cores {threads} "
         "--anywhere 'file:{input.pacbio_adapters}' "
         "--minimum-length {params.min_length} "
-        "--output {output.trimmed_fastq} "
         "--error-rate {params.error_rate} "
         "--overlap {params.overlap} "
         "{params.revcomp} "
@@ -154,7 +157,8 @@ rule cutadapt:
         "{params.discard_trimmed} "
         "--json {output.cutadapt_json} "
         "<( cat {input.fastq} ) "
-        "&> {log}"
+        "> {output.trimmed_fastq} "
+        "2> {log}"
 
 
 rule samtools_fastq:
