@@ -22,7 +22,6 @@ classifiers = [
 
 [project.scripts]
 atol-qc-raw-pacbio = "atol_qc_raw_pacbio.__main__:main"
-process_step_logs = "atol_qc_raw_pacbio.process_step_logs:main"
 
 [project.urls]
 Homepage = "https://github.com/amytims/atol-qc-raw-pacbio"
@@ -36,7 +35,7 @@ atol_qc_raw_pacbio = [
     "workflow/Snakefile",
     "workflow/report/stats_schema.json",
     "workflow/scripts/output_json_stats.py",
-    "workflow/resources/pacbio_adapters.fa",
+    "resources/pacbio_adapters.fa",
 ]
 
 [tool.setuptools.exclude-package-data]

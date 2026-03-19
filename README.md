@@ -12,7 +12,7 @@ Runs QC and produces summary stats on Pacbio HiFi reads
 
 ```bash
 apptainer exec \
-  docker://quay.io/biocontainers/atol-qc-raw-pacbio \
+  docker://quay.io/biocontainers/atol-qc-raw-pacbio:0.1.1--pyhdfd78af_0 \
   atol-qc-raw-pacbio  
   
 ```
