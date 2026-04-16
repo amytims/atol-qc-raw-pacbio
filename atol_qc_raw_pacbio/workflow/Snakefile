@@ -86,7 +86,7 @@ rule seqkit_read_length_plot:
     input:
         trimmed_fastq=reads_out,
     output:
-        plot_file=Path(workingdir, "read_lengths.png"),
+        plot_file=reads_out.with_suffix('').with_suffix(".read_lengths.png")
     log:
         Path(logs_directory, "seqkit_read_length_plot.log"),
     benchmark:
