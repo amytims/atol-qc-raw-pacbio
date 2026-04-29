@@ -14,15 +14,14 @@ def get_stats_params(wildcards, input):
     stats_content = pd.read_csv(input.stats_file, sep="\t")
     stats_dict = stats_content.to_dict(orient="records")[0]
 
-    with open(input.cutadapt_json, "rt") as f:
-        cutadapt_json = json.load(f)
+    raw_stats_content = pd.read_csv(input.raw_stats_file, sep="\t", header=None)
+    raw_stats_dict = raw_stats_content.set_index(0)[1].to_dict()
 
-    read_counts = cutadapt_json.get("read_counts", {})
-    basepair_counts = cutadapt_json.get("basepair_counts", {})
-
-    qc_reads_removed = read_counts.get("input", None) - read_counts.get("output", None)
-    qc_bases_removed = basepair_counts.get("input", None) - basepair_counts.get(
-        "output", None
+    qc_reads_removed = raw_stats_dict.get(
+        "raw total sequences:", None
+    ) - stats_dict.get("num_seqs", None)
+    qc_bases_removed = raw_stats_dict.get("total length:", None) - stats_dict.get(
+        "sum_len", None
     )
 
     reads_out_name = Path(input.reads_out).name
@@ -35,7 +34,7 @@ def get_stats_params(wildcards, input):
         "qc_bases_removed": int(qc_bases_removed),
         "qc_reads_removed": int(qc_reads_removed),
         "mean_gc_content": float(stats_dict.get("GC(%)", None)),
-        "n50_length": int(stats_dict.get("N50_num", None)),
+        "n50_length": int(stats_dict.get("N50", None)),
         "checksums": {reads_out_name: {"sha256": str(sha256sum), "md5": str(md5sum)}},
     }
 
@@ -54,7 +53,7 @@ else:
 rule output_json_stats:
     input:
         stats_file=Path(workingdir, "stats.txt"),
-        cutadapt_json=Path(workingdir, "cutadapt.json"),
+        raw_stats_file=Path(workingdir, "samtools_stats.txt"),
         md5sum=Path(reads_out.as_posix() + ".md5"),
         sha256sum=Path(reads_out.as_posix() + ".sha256"),
         reads_out=reads_out,
@@ -86,7 +85,7 @@ rule seqkit_read_length_plot:
     input:
         trimmed_fastq=reads_out,
     output:
-        plot_file=reads_out.with_suffix('').with_suffix(".read_lengths.png")
+        plot_file=stats.with_suffix(".read_lengths.png"),
     log:
         Path(logs_directory, "seqkit_read_length_plot.log"),
     benchmark:
@@ -133,7 +132,7 @@ rule cutadapt:
         Path(logs_directory, "cutadapt.log"),
     benchmark:
         Path(logs_directory, "cutadapt.benchmark.txt")
-    threads: 4
+    threads: 3
     resources:
         mem="4GB",
     params:
@@ -163,7 +162,7 @@ rule cutadapt:
 
 rule samtools_fastq:
     input:
-        bam=bam,
+        filtered_bam=Path(workingdir, "filtered.bam"),
     output:
         fastq=pipe(Path(workingdir, "file.fq")),
     log:
@@ -173,7 +172,45 @@ rule samtools_fastq:
     resources:
         mem="4GB",
     shell:
-        "samtools fastq " "{input.bam} " "> {output.fastq} " "2>{log}"
+        "samtools fastq " "{input.filtered_bam} " "> {output.fastq} " "2>{log}"
+
+
+##bamtools filter on raw file
+rule bamtools_filter:
+    input:
+        bam=bam,
+    output:
+        filtered_bam=pipe(Path(workingdir, "filtered.bam")),
+    log:
+        Path(logs_directory, "bamtools_filter.log"),
+    benchmark:
+        Path(logs_directory, "bamtools_filter.benchmark.txt")
+    resources:
+        mem="4GB",
+    shell:
+        "bamtools filter "
+        "-in {input.bam} "
+        "-out {output.filtered_bam} "
+        '-tag "rq":">=0.99" '
+        "2>{log}"
+
+
+## stats on raw file
+rule samtools_stats:
+    input:
+        bam=bam,
+    output:
+        stats=temp(Path(workingdir, "samtools_stats.txt")),
+    log:
+        Path(logs_directory, "samtools_stats.log"),
+    benchmark:
+        Path(logs_directory, "samtools_stats.benchmark.txt")
+    resources:
+        mem="4GB",
+    shell:
+        "samtools stats {input.bam} | grep ^SN | cut -f 2-3 "
+        "> {output.stats} "
+        "2>{log}"
 
 
 rule target:
