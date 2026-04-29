@@ -188,10 +188,10 @@ rule bamtools_filter:
     resources:
         mem="4GB",
     shell:
-        "bamtools filter "
-        "-in {input.bam} "
-        "-out {output.filtered_bam} "
-        '-tag "rq":">=0.99" '
+        "samtools view "
+        "-be '[rq]>=0.99' "
+        "{input.bam} "
+        "> {output.filtered_bam} "
         "2>{log}"
 
 
