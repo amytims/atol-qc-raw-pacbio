@@ -1,10 +1,11 @@
 # atol-qc-raw-pacbio
 
 Runs QC and produces summary stats on Pacbio HiFi reads
-1. Convert .bam file to .fastq for downstream processing
-2. Filter reads (`cutadapt`)
-3. Compress output (`pigz`)
-4. Output stats and read length distribution plot (`seqkit`)
+1. Filter .bam file on tag `rq >= 0.99` to remove low-quality reads (`bamtools`)
+2. Convert .bam file to .fastq for downstream processing
+3. Filter reads (`cutadapt`)
+4. Compress output (`pigz`)
+5. Output stats and read length distribution plot (`seqkit`)
 
 ## Installation: Use the [BioContainer](https://quay.io/repository/biocontainers/atol-qc-raw-pacbio?tab=tags)
 
@@ -12,7 +13,7 @@ Runs QC and produces summary stats on Pacbio HiFi reads
 
 ```bash
 apptainer exec \
-  docker://quay.io/biocontainers/atol-qc-raw-pacbio:0.1.1--pyhdfd78af_0 \
+  docker://quay.io/biocontainers/atol-qc-raw-pacbio:0.2.0--pyhdfd78af_0 \
   atol-qc-raw-pacbio  
   
 ```
